@@ -1,804 +1,373 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Latihan Matematika Interaktif</title>
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Enhanced Alarming System</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for a clean look */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            color: #334155;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        /* Card styling */
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem; /* Rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            margin: 1rem;
+            text-align: center;
+            transition: transform 0.2s ease-in-out;
+            border: 1px solid #e2e8f0;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        /* Metric display styling */
+        .metric-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+        }
+        /* Status indicators */
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px; /* Pill shape */
+            font-weight: 600;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .status-ok {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .status-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .status-alert {
+            background-color: #fee2e2;
+            color: #991b1b;
+            animation: pulse-red 1.5s infinite; /* Pulsing effect for critical alerts */
+        }
+        .status-anomaly {
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+        }
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem; /* Rounded corners */
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        /* AI Learning Indicator */
+        .learning-indicator {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+        .learning-bar {
+            width: 100%;
+            background-color: #e2e8f0;
+            border-radius: 0.5rem;
+            height: 8px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+        .learning-progress {
+            height: 100%;
+            background-color: #3b82f6;
+            width: 0%;
+            border-radius: 0.5rem;
+            transition: width 0.5s ease-out;
+        }
+
+        /* Keyframe for pulsing alert */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
 </head>
-<style>
-    /* ===== Body & Layout ===== */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-    color: #23395d;
-    text-align: center;
-    padding: 40px 20px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+<body class="flex flex-col items-center justify-center p-4">
+    <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-6">
 
-/* ===== Header ===== */
-h1 {
-    font-weight: 700;
-    font-size: 2.8rem;
-    margin-bottom: 8px;
-    color: #1769aa;
-    text-shadow: 1px 1px 5px rgba(23, 105, 170, 0.5);
-}
-h4 {
-    font-weight: 500;
-    color: #4a90e2;
-    margin-bottom: 30px;
-}
-.credit { /* Added style for the new credit paragraph */
-    font-size: 0.9rem;
-    color: #777;
-    margin-top: -20px; /* Adjust as needed */
-    margin-bottom: 30px;
-}
-
-
-/* ===== Controls ===== */
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-    flex-wrap: wrap;
-    margin-bottom: 30px;
-    width: 100%;
-    max-width: 720px;
-}
-.control-group {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    background: #fff;
-    padding: 18px 22px;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(23, 105, 170, 0.15);
-    transition: box-shadow 0.3s ease;
-    min-width: 180px;
-}
-.control-group:hover {
-    box-shadow: 0 10px 20px rgba(23, 105, 170, 0.35);
-}
-label {
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #1769aa;
-    user-select: none;
-}
-select {
-    font-size: 1rem;
-    padding: 10px 14px;
-    border-radius: 8px;
-    border: 2px solid #4a90e2;
-    outline-offset: 2px;
-    transition: border-color 0.25s ease;
-    cursor: pointer;
-    background: #e9f1fb;
-    color: #1769aa;
-}
-select:hover, select:focus {
-    border-color: #2f74d0;
-    background: #d6e4fb;
-}
-
-/* ===== Status Bar ===== */
-.status-bar {
-    margin-bottom: 20px;
-    font-weight: 600;
-    font-size: 1.3rem;
-    color: #144a75;
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-/* ===== Soal & Input ===== */
-#soal {
-    font-size: 2rem;
-    margin: 25px 0 20px;
-    font-weight: 700;
-    color: #1769aa;
-    user-select: none;
-    min-height: 60px;
-    transition: color 0.4s ease;
-}
-
-input#jawaban {
-    font-size: 1.2rem;
-    padding: 14px 18px;
-    width: 250px;
-    border-radius: 10px;
-    border: 2px solid #4a90e2;
-    outline-offset: 3px;
-    transition: border-color 0.3s ease;
-    text-align: center;
-    color: #1769aa;
-    background: #e9f1fb;
-    font-weight: 600;
-    box-shadow: inset 0 2px 6px rgba(23, 105, 170, 0.1);
-}
-input#jawaban:focus {
-    border-color: #2f74d0;
-    background: #d6e4fb;
-}
-
-/* ===== Buttons ===== */
-.buttons {
-    margin: 20px 0 10px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-button {
-    position: relative;
-    overflow: hidden;
-    background: #4caf50;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 700;
-    padding: 14px 28px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 6px 10px rgba(76, 175, 80, 0.4);
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    user-select: none;
-}
-button::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 120%;
-    height: 120%;
-    background: rgba(255, 255, 255, 0.25);
-    transform: translate(-50%, -50%) scale(0);
-    border-radius: 50%;
-    transition: transform 0.4s ease;
-    pointer-events: none;
-}
-button:hover {
-    background-color: #388e3c;
-    box-shadow: 0 10px 20px rgba(56, 142, 60, 0.6);
-}
-button:hover::after {
-    transform: translate(-50%, -50%) scale(1);
-}
-button:active {
-    background-color: #2e7d32;
-    box-shadow: 0 6px 8px rgba(46, 125, 50, 0.8);
-    transition: none;
-}
-
-/* ===== Hasil ===== */
-#hasil {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-top: 25px;
-    min-height: 40px;
-    user-select: none;
-    transition: color 0.3s ease;
-}
-
-/* ===== Icon Styles (FontAwesome) ===== */
-.fa {
-    margin-left: 8px;
-    vertical-align: middle;
-    color: #4a90e2;
-    transition: transform 0.3s ease;
-}
-button:hover .fa {
-    transform: rotate(15deg);
-}
-
-/* ===== AI Insights Section (New Styles) ===== */
-.ai-insights-section {
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(23, 105, 170, 0.15);
-    margin-top: 40px;
-    width: 90%;
-    max-width: 600px;
-    text-align: left; /* Align text within this section to the left */
-}
-.ai-insights-section h3 {
-    color: #1769aa;
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-    text-shadow: none; /* Remove text shadow for sub-headings */
-    text-align: center; /* Center the sub-heading */
-}
-#ai-prediction {
-    font-size: 1.1rem;
-    color: #23395d;
-    margin-bottom: 15px;
-    text-align: center; /* Center the prediction text */
-}
-#ai-books {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* Center book recommendations */
-    gap: 15px;
-}
-.book-recommendation {
-    background: #e9f1fb;
-    padding: 10px 15px;
-    border-radius: 8px;
-    border: 1px solid #4a90e2;
-    font-size: 0.9rem;
-    color: #1769aa;
-    text-align: center;
-    flex: 1 1 calc(50% - 15px); /* Two items per row on wider screens */
-    max-width: 250px;
-    box-shadow: 0 2px 5px rgba(23, 105, 170, 0.1);
-}
-.book-recommendation strong {
-    display: block;
-    margin-bottom: 5px;
-    color: #144a75;
-}
-.book-recommendation a {
-    color: #2f74d0;
-    text-decoration: none;
-}
-.book-recommendation a:hover {
-    text-decoration: underline;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2rem;
-    }
-    .controls {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-    .control-group {
-        width: 90%;
-        max-width: 300px;
-    }
-    #soal {
-        font-size: 1.5rem;
-    }
-    input#jawaban {
-        width: 80%;
-    }
-    .buttons {
-        flex-direction: column;
-        gap: 10px;
-    }
-    button {
-        width: 80%;
-        padding: 12px 20px;
-    }
-    .book-recommendation {
-        flex: 1 1 100%; /* One item per row on small screens */
-    }
-}
-</style>
-<body>
-    <h1>Latihan Matematika SMP</h1>
-    <h4>Pilih tingkat, materi & soal, lalu jawab!</h4>
-    <p class="credit">By Sanzz and AI</p> <div class="controls">
-        <div class="control-group">
-            <label for="tingkat">Tingkat Kesulitan:</label>
-            <select id="tingkat">
-                <option value="mudah">Mudah</option>
-                <option value="biasa">Biasa</option>
-                <option value="sulit">Sulit</option>
-                <option value="sangat_sulit">Sangat Sulit</option>
-            </select>
+        <!-- Traditional Monitoring Card -->
+        <div class="card flex flex-col items-center">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Traditional Monitoring</h2>
+            <p class="text-lg text-gray-600 mb-2">Server Load:</p>
+            <div id="serverLoadDisplay" class="metric-value">0%</div>
+            <p class="text-sm text-gray-500 mb-4">(Threshold: > 80% for Alert)</p>
+            <div id="traditionalAlarmStatus" class="status-badge status-ok">OK</div>
         </div>
-        <div class="control-group">
-            <label for="materi">Pilihan Materi:</label>
-            <select id="materi">
-                <option value="aritmatika">Aritmatika</option>
-                <option value="aljabar">Aljabar</option>
-                <option value="bangun_datar">Bangun Datar</option>
-                <option value="bangun_ruang">Bangun Ruang</option>
-                <option value="statistika">Statistika</option>
-            </select>
+
+        <!-- AI-Enhanced Monitoring Card -->
+        <div class="card flex flex-col items-center">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">AI-Enhanced Monitoring</h2>
+            <p class="text-lg text-gray-600 mb-2">AI Status:</p>
+            <p id="aiStatusText" class="text-xl font-semibold text-blue-700 mb-2">Learning...</p>
+            <div class="learning-indicator">
+                <span id="learningProgressText">Collecting data for AI baseline...</span>
+                <div class="learning-bar">
+                    <div id="learningProgressBar" class="learning-progress"></div>
+                </div>
+            </div>
+            <div id="aiAnomalyStatus" class="status-badge status-ok mt-4">No Anomaly</div>
         </div>
-        <div class="control-group">
-            <label for="operasi">Pilihan Soal:</label>
-            <select id="operasi">
-                </select>
-        </div>
+
     </div>
 
-    <div class="status-bar" id="status">--</div>
-
-    <div id="soal">Pilih opsi di atas untuk mulai.</div>
-    <input type="text" id="jawaban" placeholder="Masukkan jawaban" autocomplete="off" />
-    
-    <div class="buttons">
-        <button id="cekJawaban">
-            Jawab <i class="fa fa-check"></i>
-        </button>
-        <button id="soalBaru" style="background:#1769aa;">
-            Soal Baru <i class="fa fa-redo"></i>
-        </button>
+    <!-- Controls -->
+    <div class="flex flex-wrap justify-center gap-4 mt-8 w-full max-w-md">
+        <button id="startBtn" class="btn btn-primary flex-1">Start Simulation</button>
+        <button id="stopBtn" class="btn btn-secondary flex-1" disabled>Stop Simulation</button>
+        <button id="resetBtn" class="btn btn-secondary flex-1">Reset AI</button>
     </div>
 
-    <div id="hasil"></div>
+    <script>
+        // --- DOM Elements ---
+        const serverLoadDisplay = document.getElementById('serverLoadDisplay');
+        const traditionalAlarmStatus = document.getElementById('traditionalAlarmStatus');
+        const aiStatusText = document.getElementById('aiStatusText');
+        const aiAnomalyStatus = document.getElementById('aiAnomalyStatus');
+        const learningProgressText = document.getElementById('learningProgressText');
+        const learningProgressBar = document.getElementById('learningProgressBar');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const resetBtn = document.getElementById('resetBtn');
 
-    <div id="ai-insights" class="ai-insights-section">
-        <h3>Rekomendasi AI</h3>
-        <p id="ai-prediction">Jawab beberapa soal untuk mendapatkan prediksi dan rekomendasi.</p>
-        <div id="ai-books"></div>
-    </div>
+        // --- Simulation Parameters ---
+        const SIMULATION_INTERVAL_MS = 1000; // Update every 1 second
+        const TRADITIONAL_THRESHOLD = 80; // % load for traditional alarm
+        const AI_LEARNING_PERIOD = 30; // Number of data points to collect for AI baseline
+        const AI_ANOMALY_FACTOR = 0.2; // How much deviation from normal is considered an anomaly (e.g., 20% outside range)
 
-    <script>// script.js
+        // --- Global State ---
+        let simulationTimer = null;
+        let currentServerLoad = 0;
+        let aiLearningData = []; // Stores historical load data for AI
+        let aiBaselineMin = 0;
+        let aiBaselineMax = 0;
+        let isAiLearning = true;
 
-// --- DOM Elements ---
-// Centralized access to all necessary DOM elements for cleaner code.
-const DOM = {
-    tingkatSelect: document.getElementById('tingkat'),
-    materiSelect: document.getElementById('materi'),
-    operasiSelect: document.getElementById('operasi'),
-    soalDiv: document.getElementById('soal'),
-    jawabanInput: document.getElementById('jawaban'),
-    cekBtn: document.getElementById('cekJawaban'),
-    soalBaruBtn: document.getElementById('soalBaru'),
-    hasilDiv: document.getElementById('hasil'),
-    statusBar: document.getElementById('status'),
-    aiPredictionDiv: document.getElementById('ai-prediction'),
-    aiBooksDiv: document.getElementById('ai-books')
-};
+        // --- Helper Functions ---
 
-// --- Data Definitions ---
-// Defines available operations/sub-topics for each main subject.
-const OPERATIONS_DATA = {
-    aritmatika: [
-        { value: 'acak', text: 'Soal Acak' },
-        { value: '+', text: 'Penjumlahan (+)' },
-        { value: '-', text: 'Pengurangan (−)' },
-        { value: '*', text: 'Perkalian (×)' },
-        { value: '/', text: 'Pembagian (÷)' }
-    ],
-    aljabar: [
-        { value: 'acak', text: 'Soal Acak' },
-        { value: 'penjumlahan', text: 'Penjumlahan Su. Sejenis' },
-        { value: 'pengurangan', text: 'Pengurangan Su. Sejenis' },
-        { value: 'pangkat', text: 'Gabung Pangkat' }
-    ],
-    bangun_datar: [
-        { value: 'acak', text: 'Soal Acak' },
-        { value: 'luas', text: 'Hitung Luas' },
-        { value: 'keliling', text: 'Hitung Keliling' },
-        { value: 'panjang', text: 'Hitung Panjang' },
-        { value: 'lebar', text: 'Hitung Lebar' }
-    ],
-    bangun_ruang: [
-        { value: 'acak', text: 'Soal Acak' },
-        { value: 'volume', text: 'Hitung Volume Kubus' },
-        { value: 'luas_permukaan', text: 'Hitung Luas Permukaan' }
-    ],
-    statistika: [
-        { value: 'acak', text: 'Soal Acak' },
-        { value: 'rata_rata', text: 'Hitung Rata-Rata' },
-        { value: 'median', text: 'Hitung Median' },
-        { value: 'modus', text: 'Hitung Modus' }
-    ]
-};
+        /**
+         * Generates a simulated server load.
+         * It fluctuates around a normal range but can occasionally spike.
+         * @returns {number} Current server load percentage.
+         */
+        function generateServerLoad() {
+            // Simulate normal fluctuation (e.g., 30-70%)
+            let load = Math.random() * 40 + 30; // Base load between 30% and 70%
 
-// --- Mock Book Data for Recommendations ---
-// In a real application, this would come from a database or a recommendation engine.
-const MOCK_BOOKS = {
-    aritmatika: [
-        { title: "Matematika Dasar untuk SMP", author: "Adi Wijaya", link: "#", difficulty: "mudah" },
-        { title: "Kalkulus untuk Pemula", author: "Budi Santoso", link: "#", difficulty: "biasa" }
-    ],
-    aljabar: [
-        { title: "Pengantar Aljabar", author: "Citra Dewi", link: "#", difficulty: "mudah" },
-        { title: "Mastering Aljabar Tingkat Lanjut", author: "Dedi Susanto", link: "#", difficulty: "sulit" }
-    ],
-    bangun_datar: [
-        { title: "Geometri Datar dan Aplikasinya", author: "Eka Putri", link: "#", difficulty: "biasa" }
-    ],
-    bangun_ruang: [
-        { title: "Memahami Geometri Ruang", author: "Fajar Gemilang", link: "#", difficulty: "sulit" }
-    ],
-    statistika: [
-        { title: "Statistika Mudah dan Cepat", author: "Gita Lestari", link: "#", difficulty: "mudah" },
-        { title: "Panduan Lengkap Statistika", author: "Heri Susanto", link: "#", difficulty: "biasa" }
-    ]
-};
+            // Introduce occasional spikes to trigger alarms/anomalies
+            if (Math.random() < 0.15) { // 15% chance of a spike
+                load += Math.random() * 40; // Add up to 40% more load
+            }
+            if (Math.random() < 0.05) { // 5% chance of a very high spike
+                load += Math.random() * 20; // Add up to 20% more load (can go over 100)
+            }
 
-// --- Global State Variables ---
-let currentMateri = DOM.materiSelect.value;
-let currentOperasi = '';
-let currentQuestion = {}; // Holds details of the question currently displayed
-let questionStartTime; // Timestamp when the question was generated
-
-// User performance data stored locally. In a real app, this goes to a backend.
-let userPerformanceData = [];
-const PERFORMANCE_STORAGE_KEY = 'mathPracticePerformance';
-
-// --- Helper Functions ---
-/** Generates a random integer within a specified range (inclusive). */
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-/** Generates a semi-unique ID for a question based on its parameters. */
-function generateQuestionId(materi, operasi, tingkat, values) {
-    // Sort values to ensure consistent ID for questions with same numbers but different order
-    const valString = Object.values(values).sort().join('-');
-    return `${materi}-${operasi}-${tingkat}-${valString}`;
-}
-
-/** Loads user performance data from local storage. */
-function loadPerformanceData() {
-    const storedData = localStorage.getItem(PERFORMANCE_STORAGE_KEY);
-    if (storedData) {
-        userPerformanceData = JSON.parse(storedData);
-    }
-}
-
-/** Saves user performance data to local storage. */
-function savePerformanceData() {
-    localStorage.setItem(PERFORMANCE_STORAGE_KEY, JSON.stringify(userPerformanceData));
-}
-
-// --- UI Population Functions ---
-/** Populates the 'Pilihan Soal' (operasi) dropdown based on the selected materi. */
-function populateOperasiSelect(materi) {
-    DOM.operasiSelect.innerHTML = ''; // Clear previous options
-    OPERATIONS_DATA[materi].forEach(op => {
-        let opt = document.createElement('option');
-        opt.value = op.value;
-        opt.textContent = op.text;
-        DOM.operasiSelect.appendChild(opt);
-    });
-    currentOperasi = DOM.operasiSelect.value; // Set current operation to the first one
-}
-
-// --- Question Generation Logic ---
-/** Generates and displays a new math question. */
-function generateNewQuestion() {
-    DOM.hasilDiv.textContent = ''; // Clear previous result message
-    DOM.jawabanInput.value = ''; // Clear input field
-    questionStartTime = Date.now(); // Record start time for this question
-
-    // Update current state based on user selections
-    currentMateri = DOM.materiSelect.value;
-    currentOperasi = DOM.operasiSelect.value;
-    const difficultyLevel = DOM.tingkatSelect.value;
-
-    DOM.statusBar.textContent = `Tingkat: ${difficultyLevel}, Materi: ${currentMateri}, Soal: ${currentOperasi}`;
-
-    let correctAnswer, questionText = '';
-    let questionValues = {}; // To store the numbers/variables used in the question
-
-    // If 'acak' (random) mode is selected for the operation, pick a random sub-operation
-    if (currentOperasi === 'acak') {
-        const availableOps = OPERATIONS_DATA[currentMateri].filter(op => op.value !== 'acak');
-        let randomPick = availableOps[getRandomInt(0, availableOps.length - 1)].value;
-        currentOperasi = randomPick;
-        DOM.operasiSelect.value = randomPick; // Update the dropdown to show the selected random op
-    }
-
-    // --- Generate questions based on Materi and Operasi ---
-    if (currentMateri === 'aritmatika') {
-        let a, b;
-        switch (difficultyLevel) {
-            case 'mudah': a = getRandomInt(1, 10); b = getRandomInt(1, 10); break;
-            case 'biasa': a = getRandomInt(1, 50); b = getRandomInt(1, 20); break;
-            case 'sulit': a = getRandomInt(1, 100); b = getRandomInt(1, 50); break;
-            case 'sangat_sulit': a = getRandomInt(1, 200); b = getRandomInt(1, 100); break;
+            return Math.min(100, Math.max(0, Math.round(load))); // Cap between 0 and 100
         }
-        questionValues = { a, b }; // Store values for ID generation
 
-        switch (currentOperasi) {
-            case '+':
-                questionText = `${a} + ${b} = ?`;
-                correctAnswer = a + b;
-                break;
-            case '-':
-                questionText = `${a} - ${b} = ?`;
-                correctAnswer = a - b;
-                break;
-            case '*':
-                questionText = `${a} × ${b} = ?`;
-                correctAnswer = a * b;
-                break;
-            case '/':
-                // Ensure division results in a whole number
-                questionText = `${a * b} ÷ ${b} = ?`;
-                correctAnswer = a;
-                break;
+        /**
+         * Checks the server load against a fixed threshold for traditional alarming.
+         */
+        function checkTraditionalAlarm() {
+            traditionalAlarmStatus.classList.remove('status-ok', 'status-warning', 'status-alert');
+            if (currentServerLoad > TRADITIONAL_THRESHOLD) {
+                traditionalAlarmStatus.textContent = 'ALERT!';
+                traditionalAlarmStatus.classList.add('status-alert');
+            } else if (currentServerLoad > TRADITIONAL_THRESHOLD * 0.75) { // Warning at 75% of threshold
+                traditionalAlarmStatus.textContent = 'WARNING';
+                traditionalAlarmStatus.classList.add('status-warning');
+            } else {
+                traditionalAlarmStatus.textContent = 'OK';
+                traditionalAlarmStatus.classList.add('status-ok');
+            }
         }
-    } else if (currentMateri === 'aljabar') {
-        const variables = ['x', 'y', 'a', 'b'];
-        const variable = variables[getRandomInt(0, variables.length - 1)];
-        let k1, k2;
-        switch (difficultyLevel) {
-            case 'mudah': k1 = getRandomInt(1, 5); k2 = getRandomInt(1, 5); break;
-            default: k1 = getRandomInt(1, 10); k2 = getRandomInt(1, 10); break;
+
+        /**
+         * Simulates AI learning and anomaly detection.
+         * The AI learns a 'normal' range and flags deviations.
+         */
+        function simulateAI() {
+            // Step 1: AI Learning Phase
+            if (isAiLearning) {
+                aiLearningData.push(currentServerLoad);
+                learningProgressBar.style.width = `${(aiLearningData.length / AI_LEARNING_PERIOD) * 100}%`;
+                learningProgressText.textContent = `Collecting data for AI baseline... (${aiLearningData.length}/${AI_LEARNING_PERIOD})`;
+
+                if (aiLearningData.length >= AI_LEARNING_PERIOD) {
+                    isAiLearning = false;
+                    // Calculate baseline min/max from collected data
+                    aiBaselineMin = Math.min(...aiLearningData);
+                    aiBaselineMax = Math.max(...aiLearningData);
+                    
+                    // Expand baseline slightly to account for normal variance
+                    const range = aiBaselineMax - aiBaselineMin;
+                    aiBaselineMin = Math.max(0, aiBaselineMin - range * AI_ANOMALY_FACTOR);
+                    aiBaselineMax = Math.min(100, aiBaselineMax + range * AI_ANOMALY_FACTOR);
+
+                    learningProgressText.textContent = `AI Baseline Learned: ${aiBaselineMin.toFixed(0)}% - ${aiBaselineMax.toFixed(0)}%`;
+                    aiStatusText.textContent = 'Monitoring Active';
+                    console.log(`AI Learning Complete. Baseline: ${aiBaselineMin.toFixed(2)} - ${aiBaselineMax.toFixed(2)}`);
+                }
+                return; // Don't perform anomaly detection until learning is complete
+            }
+
+            // Step 2: Anomaly Detection (after learning)
+            aiAnomalyStatus.classList.remove('status-ok', 'status-anomaly', 'status-alert'); // Clear previous status
+
+            if (currentServerLoad < aiBaselineMin || currentServerLoad > aiBaselineMax) {
+                aiAnomalyStatus.textContent = 'ANOMALY DETECTED!';
+                aiAnomalyStatus.classList.add('status-anomaly');
+                aiStatusText.textContent = 'Anomaly Detected!';
+                // If the anomaly is also above the traditional threshold, it's a critical anomaly
+                if (currentServerLoad > TRADITIONAL_THRESHOLD) {
+                    aiAnomalyStatus.classList.add('status-alert');
+                }
+            } else {
+                aiAnomalyStatus.textContent = 'No Anomaly';
+                aiAnomalyStatus.classList.add('status-ok');
+            }
+
+            // Step 3: Basic Prediction (based on recent trend)
+            // Keep a rolling window of recent data for trend analysis
+            aiLearningData.push(currentServerLoad);
+            if (aiLearningData.length > AI_LEARNING_PERIOD * 2) { // Keep roughly double the learning period for trend
+                aiLearningData.shift(); // Remove oldest data point
+            }
+
+            const recentLoads = aiLearningData.slice(-5); // Look at last 5 data points
+            if (recentLoads.length < 5) {
+                aiStatusText.textContent = 'Monitoring Active'; // Not enough data for trend yet
+                return;
+            }
+
+            const first = recentLoads[0];
+            const last = recentLoads[recentLoads.length - 1];
+            const averageChange = (last - first) / recentLoads.length;
+
+            if (Math.abs(averageChange) < 2) { // Small change
+                aiStatusText.textContent = 'Server Load: Stable';
+            } else if (averageChange > 0) {
+                aiStatusText.textContent = 'Server Load: Rising Trend';
+            } else {
+                aiStatusText.textContent = 'Server Load: Falling Trend';
+            }
         }
-        questionValues = { variable, k1, k2 };
 
-        switch (currentOperasi) {
-            case 'penjumlahan':
-                questionText = `${k1}${variable} + ${k2}${variable} = ?`;
-                correctAnswer = `${k1 + k2}${variable}`;
-                break;
-            case 'pengurangan':
-                questionText = `${k1}${variable} - ${k2}${variable} = ?`;
-                correctAnswer = `${k1 - k2}${variable}`;
-                break;
-            case 'pangkat':
-                let e1 = getRandomInt(2, 3), e2 = getRandomInt(2, 3);
-                questionText = `${variable}^${e1} × ${variable}^${e2} = ?`;
-                correctAnswer = `${variable}^${e1 + e2}`;
-                break;
+        /**
+         * Updates all UI elements with current simulation data.
+         */
+        function updateUI() {
+            serverLoadDisplay.textContent = `${currentServerLoad}%`;
+            checkTraditionalAlarm();
+            simulateAI();
         }
-    } else if (currentMateri === 'bangun_datar') {
-        let p = getRandomInt(2, 10), l = getRandomInt(2, 10);
-        questionValues = { p, l };
 
-        switch (currentOperasi) {
-            case 'luas':
-                questionText = `Luas persegi panjang dengan p=${p}, l=${l}?`;
-                correctAnswer = p * l;
-                break;
-            case 'keliling':
-                questionText = `Keliling persegi panjang dengan p=${p}, l=${l}?`;
-                correctAnswer = 2 * (p + l);
-                break;
-            case 'panjang':
-                questionText = `Jika keliling K=${2 * (p + l)}, l=${l}, hitung p?`;
-                correctAnswer = p;
-                break;
-            case 'lebar':
-                questionText = `Jika keliling K=${2 * (p + l)}, p=${p}, hitung l?`;
-                correctAnswer = l;
-                break;
+        /**
+         * Starts the simulation timer.
+         */
+        function startSimulation() {
+            if (!simulationTimer) {
+                simulationTimer = setInterval(() => {
+                    currentServerLoad = generateServerLoad();
+                    updateUI();
+                }, SIMULATION_INTERVAL_MS);
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                resetBtn.disabled = true; // Disable reset during simulation
+            }
         }
-    } else if (currentMateri === 'bangun_ruang') {
-        let s = getRandomInt(2, 8);
-        questionValues = { s };
 
-        switch (currentOperasi) {
-            case 'volume':
-                questionText = `Volume kubus s=${s}?`;
-                correctAnswer = s ** 3;
-                break;
-            case 'luas_permukaan':
-                questionText = `Luas permukaan kubus s=${s}?`;
-                correctAnswer = 6 * (s ** 2);
-                break;
+        /**
+         * Stops the simulation timer.
+         */
+        function stopSimulation() {
+            if (simulationTimer) {
+                clearInterval(simulationTimer);
+                simulationTimer = null;
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                resetBtn.disabled = false; // Enable reset after stopping
+            }
         }
-    } else if (currentMateri === 'statistika') {
-        let arrLength = getRandomInt(5, 8);
-        let arr = Array.from({ length: arrLength }, () => getRandomInt(1, 20)).sort((a, b) => a - b);
-        questionValues = { arr: arr.join(',') }; // Store array as string
 
-        switch (currentOperasi) {
-            case 'rata_rata':
-                questionText = `Rata-rata dari [${arr.join(', ')}]? (2 desimal)`;
-                correctAnswer = (arr.reduce((sum, val) => sum + val, 0) / arr.length).toFixed(2);
-                break;
-            case 'median':
-                let mid = Math.floor(arr.length / 2);
-                correctAnswer = arr.length % 2 === 0
-                    ? ((arr[mid - 1] + arr[mid]) / 2)
-                    : arr[mid];
-                questionText = `Median dari [${arr.join(', ')}]?`;
-                break;
-            case 'modus':
-                let frequencyMap = {}, maxFreq = 0, modes = [];
-                arr.forEach(val => {
-                    frequencyMap[val] = (frequencyMap[val] || 0) + 1;
-                    if (frequencyMap[val] > maxFreq) maxFreq = frequencyMap[val];
-                });
-                Object.keys(frequencyMap).forEach(key => {
-                    if (frequencyMap[key] === maxFreq) modes.push(key);
-                });
-                correctAnswer = modes.length === arr.length ? 'Tidak ada modus' : modes.join(', ');
-                questionText = `Modus dari [${arr.join(', ')}]?`;
-                break;
+        /**
+         * Resets the AI learning process and simulation.
+         */
+        function resetAI() {
+            stopSimulation();
+            currentServerLoad = 0;
+            aiLearningData = [];
+            aiBaselineMin = 0;
+            aiBaselineMax = 0;
+            isAiLearning = true;
+
+            serverLoadDisplay.textContent = '0%';
+            traditionalAlarmStatus.textContent = 'OK';
+            traditionalAlarmStatus.className = 'status-badge status-ok'; // Reset classes
+            aiStatusText.textContent = 'Learning...';
+            aiAnomalyStatus.textContent = 'No Anomaly';
+            aiAnomalyStatus.className = 'status-badge status-ok'; // Reset classes
+            learningProgressText.textContent = 'Collecting data for AI baseline...';
+            learningProgressBar.style.width = '0%';
+
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            resetBtn.disabled = false;
         }
-    }
 
-    DOM.soalDiv.textContent = questionText;
-    // Store current question details in the global object
-    currentQuestion = {
-        id: generateQuestionId(currentMateri, currentOperasi, difficultyLevel, questionValues),
-        materi: currentMateri,
-        operasi: currentOperasi,
-        tingkat: difficultyLevel,
-        questionText: questionText,
-        correctAnswer: correctAnswer
-    };
-}
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startSimulation);
+        stopBtn.addEventListener('click', stopSimulation);
+        resetBtn.addEventListener('click', resetAI);
 
-// --- AI Simulation Functions (Placeholders for real AI integration) ---
-/**
- * Simulates an AI prediction of user performance.
- * In a real app, this would be an API call to a backend ML model.
- */
-function getAIPrediction() {
-    if (userPerformanceData.length < 5) {
-        DOM.aiPredictionDiv.textContent = "Jawab beberapa soal lagi untuk mendapatkan prediksi akurat!";
-        return;
-    }
-
-    // Simple prediction logic: calculate accuracy for the last 10 questions or overall
-    const recentData = userPerformanceData.slice(-10); // Last 10 questions
-    const correctCount = recentData.filter(q => q.isCorrect).length;
-    const accuracy = (correctCount / recentData.length) * 100;
-
-    let message;
-    if (accuracy >= 90) {
-        message = `Luar biasa! Kamu sangat menguasai. Prediksi AI: ${accuracy.toFixed(0)}% kemungkinan benar di soal berikutnya.`;
-    } else if (accuracy >= 70) {
-        message = `Bagus! Kamu cukup konsisten. Prediksi AI: ${accuracy.toFixed(0)}% kemungkinan benar di soal berikutnya.`;
-    } else if (accuracy >= 50) {
-        message = `Terus berlatih ya! Prediksi AI: ${accuracy.toFixed(0)}% kemungkinan benar di soal berikutnya.`;
-    } else {
-        message = `Jangan menyerah! Prediksi AI: ${accuracy.toFixed(0)}% kemungkinan benar di soal berikutnya. Lanjutkan belajar.`;
-    }
-    DOM.aiPredictionDiv.textContent = message;
-}
-
-/**
- * Simulates AI book recommendations based on user performance.
- * In a real app, this would be an API call to a backend recommendation engine.
- */
-function getAIRecommendation() {
-    DOM.aiBooksDiv.innerHTML = ''; // Clear previous recommendations
-
-    if (userPerformanceData.length < 10) {
-        DOM.aiBooksDiv.textContent = "Butuh lebih banyak data untuk rekomendasi buku.";
-        return;
-    }
-
-    // Simple recommendation logic: find the weakest subject or most practiced subject
-    const subjectAccuracy = {};
-    const subjectCount = {};
-
-    userPerformanceData.forEach(q => {
-        if (!subjectAccuracy[q.materi]) {
-            subjectAccuracy[q.materi] = { correct: 0, total: 0 };
-        }
-        subjectAccuracy[q.materi].total++;
-        if (q.isCorrect) {
-            subjectAccuracy[q.materi].correct++;
-        }
-    });
-
-    let lowestAccuracy = 101; // Higher than possible to ensure first subject sets it
-    let weakestSubject = null;
-
-    for (const materi in subjectAccuracy) {
-        const accuracy = (subjectAccuracy[materi].correct / subjectAccuracy[materi].total) * 100;
-        if (subjectAccuracy[materi].total >= 3 && accuracy < lowestAccuracy) { // Needs at least 3 attempts to be considered
-            lowestAccuracy = accuracy;
-            weakestSubject = materi;
-        }
-    }
-
-    let recommendedBooks = [];
-    if (weakestSubject && MOCK_BOOKS[weakestSubject]) {
-        // Prioritize books for the weakest subject
-        recommendedBooks = MOCK_BOOKS[weakestSubject];
-        // Optionally, filter by difficulty matching user's common level or suggest easier ones
-    } else {
-        // If no clear weakest subject, recommend general books or from popular subjects
-        recommendedBooks = MOCK_BOOKS.aritmatika.concat(MOCK_BOOKS.aljabar).slice(0, 2); // Example
-    }
-
-    if (recommendedBooks.length > 0) {
-        recommendedBooks.forEach(book => {
-            const bookElement = document.createElement('div');
-            bookElement.classList.add('book-recommendation');
-            bookElement.innerHTML = `
-                <strong>${book.title}</strong>
-                <p>Oleh: ${book.author}</p>
-                <p>Tingkat: ${book.difficulty.charAt(0).toUpperCase() + book.difficulty.slice(1)}</p>
-                <a href="${book.link}" target="_blank">Lihat Selengkapnya</a>
-            `;
-            DOM.aiBooksDiv.appendChild(bookElement);
-        });
-    } else {
-        DOM.aiBooksDiv.textContent = "Tidak ada rekomendasi buku saat ini. Terus berlatih!";
-    }
-}
-
-
-// --- Event Listeners ---
-DOM.tingkatSelect.addEventListener('change', () => {
-    generateNewQuestion();
-    getAIPrediction(); // Update prediction after new question
-    getAIRecommendation(); // Update recommendation
-});
-
-DOM.materiSelect.addEventListener('change', () => {
-    currentMateri = DOM.materiSelect.value;
-    populateOperasiSelect(currentMateri); // Repopulate operations for new subject
-    generateNewQuestion();
-    getAIPrediction();
-    getAIRecommendation();
-});
-
-DOM.operasiSelect.addEventListener('change', () => {
-    currentOperasi = DOM.operasiSelect.value;
-    generateNewQuestion();
-    getAIPrediction();
-    getAIRecommendation();
-});
-
-DOM.cekBtn.addEventListener('click', () => {
-    const userAnswer = DOM.jawabanInput.value.trim();
-    const correctAnswer = String(currentQuestion.correctAnswer).trim(); // Ensure string comparison
-
-    if (userAnswer === '') {
-        DOM.hasilDiv.textContent = 'Isi jawaban dulu ya!';
-        DOM.hasilDiv.style.color = 'red';
-        return;
-    }
-
-    const timeTaken = (Date.now() - questionStartTime) / 1000; // Time in seconds
-    const isCorrect = (userAnswer === correctAnswer);
-
-    // Log performance data
-    userPerformanceData.push({
-        timestamp: new Date().toISOString(),
-        materi: currentQuestion.materi,
-        operasi: currentQuestion.operasi,
-        tingkat: currentQuestion.tingkat,
-        questionText: currentQuestion.questionText,
-        correctAnswer: currentQuestion.correctAnswer,
-        userAnswer: userAnswer,
-        isCorrect: isCorrect,
-        timeTaken: timeTaken,
-        questionId: currentQuestion.id // Unique ID for specific question instance
-    });
-    savePerformanceData(); // Save to local storage
-
-    // Display result to user
-    if (isCorrect) {
-        DOM.hasilDiv.textContent = 'Betul! 🎉';
-        DOM.hasilDiv.style.color = 'green';
-    } else {
-        DOM.hasilDiv.textContent = `Salah, jawabannya ${correctAnswer}`;
-        DOM.hasilDiv.style.color = 'red';
-    }
-
-    // Update AI insights after checking answer
-    getAIPrediction();
-    getAIRecommendation();
-});
-
-DOM.soalBaruBtn.addEventListener('click', () => {
-    generateNewQuestion();
-    getAIPrediction(); // Update prediction after new question
-    getAIRecommendation(); // Update recommendation
-});
-
-// --- Initialization ---
-// This runs when the page first loads.
-function initializeApp() {
-    loadPerformanceData(); // Load any previously stored data
-    populateOperasiSelect(currentMateri); // Fill 'Pilihan Soal' dropdown
-    generateNewQuestion(); // Generate the first question
-    getAIPrediction(); // Show initial AI prediction
-    getAIRecommendation(); // Show initial AI recommendations
-}
-
-initializeApp(); // Call the initialization function</script>
+        // --- Initial Setup ---
+        // Start with a clean state and update UI once
+        resetAI(); // Call reset to initialize all states correctly
+    </script>
 </body>
 </html>
