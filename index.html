@@ -3,371 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-Enhanced Alarming System</title>
-    <!-- Tailwind CSS CDN for easy styling -->
+    <title>Simulated Customer Support with AI</title>
+    <!-- Load Tailwind CSS for modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom font for a clean look */
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
-            color: #334155;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            color: #1a202c;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
-        /* Card styling */
-        .card {
+        .container-card {
             background-color: #ffffff;
-            border-radius: 1rem; /* Rounded corners */
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            padding: 2.5rem;
-            margin: 1rem;
+            border-radius: 1.5rem; /* More rounded corners */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            padding: 3rem;
+            width: 100%;
+            max-width: 768px; /* Tablet/desktop max width */
             text-align: center;
-            transition: transform 0.2s ease-in-out;
-            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease-in-out;
+            border: 1px solid #bfdbfe;
         }
-        .card:hover {
-            transform: translateY(-5px);
+        .container-card:hover {
+            transform: translateY(-8px);
         }
-        /* Metric display styling */
-        .metric-value {
-            font-size: 3.5rem;
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid #93c5fd;
+            font-size: 1rem;
+            resize: vertical; /* Allow vertical resizing */
+            min-height: 100px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+            transition: border-color 0.3s ease;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+        .btn-process {
+            background-color: #2563eb;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
             font-weight: 700;
-            color: #1e3a8a;
-            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.2s ease;
+            box-shadow: 0 5px 10px rgba(37, 99, 235, 0.2);
+            border: none;
         }
-        /* Status indicators */
-        .status-badge {
+        .btn-process:hover {
+            background-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3);
+        }
+        .btn-process:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(37, 99, 235, 0.2);
+        }
+        .ai-result-box {
+            background-color: #f0f9ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: left;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .ai-result-box h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 0.75rem;
+        }
+        .sentiment-badge {
             display: inline-block;
             padding: 0.5rem 1.25rem;
             border-radius: 9999px; /* Pill shape */
             font-weight: 600;
-            margin-top: 1rem;
+            margin-top: 0.75rem;
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
-        .status-ok {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-        .status-warning {
-            background-color: #fef3c7;
-            color: #92400e;
-        }
-        .status-alert {
-            background-color: #fee2e2;
-            color: #991b1b;
-            animation: pulse-red 1.5s infinite; /* Pulsing effect for critical alerts */
-        }
-        .status-anomaly {
-            background-color: #e0f2fe;
-            color: #0c4a6e;
-        }
-        /* Buttons */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem; /* Rounded corners */
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .btn-primary {
-            background-color: #2563eb;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #1d4ed8;
-            transform: translateY(-1px);
-        }
-        .btn-secondary {
-            background-color: #e2e8f0;
-            color: #475569;
-        }
-        .btn-secondary:hover {
-            background-color: #cbd5e1;
-            transform: translateY(-1px);
-        }
-        .btn:active {
-            transform: translateY(1px);
-            box-shadow: none;
-        }
+        .sentiment-positive { background-color: #d1fae5; color: #065f46; }
+        .sentiment-negative { background-color: #fee2e2; color: #991b1b; }
+        .sentiment-neutral { background-color: #fef3c7; color: #92400e; }
 
-        /* AI Learning Indicator */
-        .learning-indicator {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-top: 0.5rem;
-        }
-        .learning-bar {
-            width: 100%;
-            background-color: #e2e8f0;
-            border-radius: 0.5rem;
-            height: 8px;
-            margin-top: 0.5rem;
-            overflow: hidden;
-        }
-        .learning-progress {
-            height: 100%;
-            background-color: #3b82f6;
-            width: 0%;
-            border-radius: 0.5rem;
-            transition: width 0.5s ease-out;
-        }
-
-        /* Keyframe for pulsing alert */
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .container-card {
+                padding: 2rem;
+                margin: 0.5rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .btn-process {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center p-4">
-    <div class="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <!-- Traditional Monitoring Card -->
-        <div class="card flex flex-col items-center">
-            <h2 class="text-2xl font-bold mb-4 text-gray-800">Traditional Monitoring</h2>
-            <p class="text-lg text-gray-600 mb-2">Server Load:</p>
-            <div id="serverLoadDisplay" class="metric-value">0%</div>
-            <p class="text-sm text-gray-500 mb-4">(Threshold: > 80% for Alert)</p>
-            <div id="traditionalAlarmStatus" class="status-badge status-ok">OK</div>
+    <div class="container-card">
+        <h1 class="text-4xl font-extrabold text-blue-800 mb-4">Customer Support Simulator</h1>
+        <p class="text-lg text-gray-700 mb-6">
+            Type a customer message below and see how AI can analyze its sentiment and suggest actions.
+            (Simulated AI for demonstration purposes)
+        </p>
+
+        <div class="input-area">
+            <label for="customerMessage" class="text-left text-gray-700 font-semibold text-lg">Customer Message:</label>
+            <textarea id="customerMessage" placeholder="e.g., 'My internet is not working, I am very frustrated!' or 'Thank you for your quick help, everything is great now!'" rows="5"></textarea>
+            <button id="processMessageBtn" class="btn-process">Analyze Message with AI</button>
         </div>
 
-        <!-- AI-Enhanced Monitoring Card -->
-        <div class="card flex flex-col items-center">
-            <h2 class="text-2xl font-bold mb-4 text-gray-800">AI-Enhanced Monitoring</h2>
-            <p class="text-lg text-gray-600 mb-2">AI Status:</p>
-            <p id="aiStatusText" class="text-xl font-semibold text-blue-700 mb-2">Learning...</p>
-            <div class="learning-indicator">
-                <span id="learningProgressText">Collecting data for AI baseline...</span>
-                <div class="learning-bar">
-                    <div id="learningProgressBar" class="learning-progress"></div>
-                </div>
-            </div>
-            <div id="aiAnomalyStatus" class="status-badge status-ok mt-4">No Anomaly</div>
+        <div id="aiAnalysisResult" class="ai-result-box hidden">
+            <h3>AI Analysis:</h3>
+            <p class="text-gray-800 text-lg mb-2"><strong>Sentiment:</strong> <span id="sentimentDisplay" class="sentiment-badge"></span></p>
+            <p class="text-gray-800 text-lg"><strong>Suggested Action:</strong> <span id="actionSuggestion"></span></p>
         </div>
-
-    </div>
-
-    <!-- Controls -->
-    <div class="flex flex-wrap justify-center gap-4 mt-8 w-full max-w-md">
-        <button id="startBtn" class="btn btn-primary flex-1">Start Simulation</button>
-        <button id="stopBtn" class="btn btn-secondary flex-1" disabled>Stop Simulation</button>
-        <button id="resetBtn" class="btn btn-secondary flex-1">Reset AI</button>
     </div>
 
     <script>
         // --- DOM Elements ---
-        const serverLoadDisplay = document.getElementById('serverLoadDisplay');
-        const traditionalAlarmStatus = document.getElementById('traditionalAlarmStatus');
-        const aiStatusText = document.getElementById('aiStatusText');
-        const aiAnomalyStatus = document.getElementById('aiAnomalyStatus');
-        const learningProgressText = document.getElementById('learningProgressText');
-        const learningProgressBar = document.getElementById('learningProgressBar');
-        const startBtn = document.getElementById('startBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const resetBtn = document.getElementById('resetBtn');
+        const customerMessageInput = document.getElementById('customerMessage');
+        const processMessageBtn = document.getElementById('processMessageBtn');
+        const aiAnalysisResultDiv = document.getElementById('aiAnalysisResult');
+        const sentimentDisplay = document.getElementById('sentimentDisplay');
+        const actionSuggestion = document.getElementById('actionSuggestion');
 
-        // --- Simulation Parameters ---
-        const SIMULATION_INTERVAL_MS = 1000; // Update every 1 second
-        const TRADITIONAL_THRESHOLD = 80; // % load for traditional alarm
-        const AI_LEARNING_PERIOD = 30; // Number of data points to collect for AI baseline
-        const AI_ANOMALY_FACTOR = 0.2; // How much deviation from normal is considered an anomaly (e.g., 20% outside range)
-
-        // --- Global State ---
-        let simulationTimer = null;
-        let currentServerLoad = 0;
-        let aiLearningData = []; // Stores historical load data for AI
-        let aiBaselineMin = 0;
-        let aiBaselineMax = 0;
-        let isAiLearning = true;
-
-        // --- Helper Functions ---
-
+        // --- Simulated AI Logic ---
         /**
-         * Generates a simulated server load.
-         * It fluctuates around a normal range but can occasionally spike.
-         * @returns {number} Current server load percentage.
+         * Simulates an AI model that analyzes text sentiment and suggests actions.
+         * In a real application, this would involve an actual LLM API call.
+         * @param {string} message The customer's message.
+         * @returns {object} An object containing sentiment and suggested action.
          */
-        function generateServerLoad() {
-            // Simulate normal fluctuation (e.g., 30-70%)
-            let load = Math.random() * 40 + 30; // Base load between 30% and 70%
+        async function analyzeSentimentAndSuggestAction(message) {
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 800));
 
-            // Introduce occasional spikes to trigger alarms/anomalies
-            if (Math.random() < 0.15) { // 15% chance of a spike
-                load += Math.random() * 40; // Add up to 40% more load
-            }
-            if (Math.random() < 0.05) { // 5% chance of a very high spike
-                load += Math.random() * 20; // Add up to 20% more load (can go over 100)
+            const lowerMessage = message.toLowerCase();
+            let sentiment = 'neutral';
+            let action = 'Escalate to Tier 1 Support for detailed inquiry.';
+
+            if (lowerMessage.includes('frustrated') || lowerMessage.includes('not working') || lowerMessage.includes('unhappy') || lowerMessage.includes('problem')) {
+                sentiment = 'negative';
+                action = 'Prioritize for immediate agent callback. Gather more details on the specific issue.';
+            } else if (lowerMessage.includes('thank you') || lowerMessage.includes('great') || lowerMessage.includes('happy') || lowerMessage.includes('resolved')) {
+                sentiment = 'positive';
+                action = 'Log as resolved case. Send customer satisfaction survey.';
+            } else if (lowerMessage.includes('question') || lowerMessage.includes('inquire') || lowerMessage.includes('how to')) {
+                sentiment = 'neutral';
+                action = 'Direct to knowledge base or standard inquiry queue.';
             }
 
-            return Math.min(100, Math.max(0, Math.round(load))); // Cap between 0 and 100
+            return { sentiment, action };
         }
 
-        /**
-         * Checks the server load against a fixed threshold for traditional alarming.
-         */
-        function checkTraditionalAlarm() {
-            traditionalAlarmStatus.classList.remove('status-ok', 'status-warning', 'status-alert');
-            if (currentServerLoad > TRADITIONAL_THRESHOLD) {
-                traditionalAlarmStatus.textContent = 'ALERT!';
-                traditionalAlarmStatus.classList.add('status-alert');
-            } else if (currentServerLoad > TRADITIONAL_THRESHOLD * 0.75) { // Warning at 75% of threshold
-                traditionalAlarmStatus.textContent = 'WARNING';
-                traditionalAlarmStatus.classList.add('status-warning');
-            } else {
-                traditionalAlarmStatus.textContent = 'OK';
-                traditionalAlarmStatus.classList.add('status-ok');
-            }
-        }
+        // --- Event Listener ---
+        processMessageBtn.addEventListener('click', async () => {
+            const message = customerMessageInput.value.trim();
 
-        /**
-         * Simulates AI learning and anomaly detection.
-         * The AI learns a 'normal' range and flags deviations.
-         */
-        function simulateAI() {
-            // Step 1: AI Learning Phase
-            if (isAiLearning) {
-                aiLearningData.push(currentServerLoad);
-                learningProgressBar.style.width = `${(aiLearningData.length / AI_LEARNING_PERIOD) * 100}%`;
-                learningProgressText.textContent = `Collecting data for AI baseline... (${aiLearningData.length}/${AI_LEARNING_PERIOD})`;
-
-                if (aiLearningData.length >= AI_LEARNING_PERIOD) {
-                    isAiLearning = false;
-                    // Calculate baseline min/max from collected data
-                    aiBaselineMin = Math.min(...aiLearningData);
-                    aiBaselineMax = Math.max(...aiLearningData);
-                    
-                    // Expand baseline slightly to account for normal variance
-                    const range = aiBaselineMax - aiBaselineMin;
-                    aiBaselineMin = Math.max(0, aiBaselineMin - range * AI_ANOMALY_FACTOR);
-                    aiBaselineMax = Math.min(100, aiBaselineMax + range * AI_ANOMALY_FACTOR);
-
-                    learningProgressText.textContent = `AI Baseline Learned: ${aiBaselineMin.toFixed(0)}% - ${aiBaselineMax.toFixed(0)}%`;
-                    aiStatusText.textContent = 'Monitoring Active';
-                    console.log(`AI Learning Complete. Baseline: ${aiBaselineMin.toFixed(2)} - ${aiBaselineMax.toFixed(2)}`);
-                }
-                return; // Don't perform anomaly detection until learning is complete
-            }
-
-            // Step 2: Anomaly Detection (after learning)
-            aiAnomalyStatus.classList.remove('status-ok', 'status-anomaly', 'status-alert'); // Clear previous status
-
-            if (currentServerLoad < aiBaselineMin || currentServerLoad > aiBaselineMax) {
-                aiAnomalyStatus.textContent = 'ANOMALY DETECTED!';
-                aiAnomalyStatus.classList.add('status-anomaly');
-                aiStatusText.textContent = 'Anomaly Detected!';
-                // If the anomaly is also above the traditional threshold, it's a critical anomaly
-                if (currentServerLoad > TRADITIONAL_THRESHOLD) {
-                    aiAnomalyStatus.classList.add('status-alert');
-                }
-            } else {
-                aiAnomalyStatus.textContent = 'No Anomaly';
-                aiAnomalyStatus.classList.add('status-ok');
-            }
-
-            // Step 3: Basic Prediction (based on recent trend)
-            // Keep a rolling window of recent data for trend analysis
-            aiLearningData.push(currentServerLoad);
-            if (aiLearningData.length > AI_LEARNING_PERIOD * 2) { // Keep roughly double the learning period for trend
-                aiLearningData.shift(); // Remove oldest data point
-            }
-
-            const recentLoads = aiLearningData.slice(-5); // Look at last 5 data points
-            if (recentLoads.length < 5) {
-                aiStatusText.textContent = 'Monitoring Active'; // Not enough data for trend yet
+            if (message === '') {
+                // Use a simple visual feedback instead of alert()
+                customerMessageInput.style.borderColor = 'red';
+                customerMessageInput.placeholder = 'Please enter a message before analyzing!';
+                setTimeout(() => {
+                    customerMessageInput.style.borderColor = '#93c5fd';
+                    customerMessageInput.placeholder = 'e.g., "My internet is not working, I am very frustrated!"';
+                }, 2000);
                 return;
             }
 
-            const first = recentLoads[0];
-            const last = recentLoads[recentLoads.length - 1];
-            const averageChange = (last - first) / recentLoads.length;
+            // Show loading state
+            processMessageBtn.textContent = 'Analyzing...';
+            processMessageBtn.disabled = true;
+            aiAnalysisResultDiv.classList.add('hidden'); // Hide previous result
 
-            if (Math.abs(averageChange) < 2) { // Small change
-                aiStatusText.textContent = 'Server Load: Stable';
-            } else if (averageChange > 0) {
-                aiStatusText.textContent = 'Server Load: Rising Trend';
-            } else {
-                aiStatusText.textContent = 'Server Load: Falling Trend';
+            // Simulate AI analysis
+            const { sentiment, action } = await analyzeSentimentAndSuggestAction(message);
+
+            // Update UI with results
+            sentimentDisplay.textContent = sentiment;
+            sentimentDisplay.className = `sentiment-badge sentiment-${sentiment}`; // Apply dynamic class
+            actionSuggestion.textContent = action;
+            aiAnalysisResultDiv.classList.remove('hidden'); // Show result box
+
+            // Reset button
+            processMessageBtn.textContent = 'Analyze Message with AI';
+            processMessageBtn.disabled = false;
+        });
+
+        // Optional: Clear placeholder on focus if it's the error message
+        customerMessageInput.addEventListener('focus', () => {
+            if (customerMessageInput.placeholder === 'Please enter a message before analyzing!') {
+                customerMessageInput.placeholder = 'e.g., "My internet is not working, I am very frustrated!"';
             }
-        }
-
-        /**
-         * Updates all UI elements with current simulation data.
-         */
-        function updateUI() {
-            serverLoadDisplay.textContent = `${currentServerLoad}%`;
-            checkTraditionalAlarm();
-            simulateAI();
-        }
-
-        /**
-         * Starts the simulation timer.
-         */
-        function startSimulation() {
-            if (!simulationTimer) {
-                simulationTimer = setInterval(() => {
-                    currentServerLoad = generateServerLoad();
-                    updateUI();
-                }, SIMULATION_INTERVAL_MS);
-                startBtn.disabled = true;
-                stopBtn.disabled = false;
-                resetBtn.disabled = true; // Disable reset during simulation
-            }
-        }
-
-        /**
-         * Stops the simulation timer.
-         */
-        function stopSimulation() {
-            if (simulationTimer) {
-                clearInterval(simulationTimer);
-                simulationTimer = null;
-                startBtn.disabled = false;
-                stopBtn.disabled = true;
-                resetBtn.disabled = false; // Enable reset after stopping
-            }
-        }
-
-        /**
-         * Resets the AI learning process and simulation.
-         */
-        function resetAI() {
-            stopSimulation();
-            currentServerLoad = 0;
-            aiLearningData = [];
-            aiBaselineMin = 0;
-            aiBaselineMax = 0;
-            isAiLearning = true;
-
-            serverLoadDisplay.textContent = '0%';
-            traditionalAlarmStatus.textContent = 'OK';
-            traditionalAlarmStatus.className = 'status-badge status-ok'; // Reset classes
-            aiStatusText.textContent = 'Learning...';
-            aiAnomalyStatus.textContent = 'No Anomaly';
-            aiAnomalyStatus.className = 'status-badge status-ok'; // Reset classes
-            learningProgressText.textContent = 'Collecting data for AI baseline...';
-            learningProgressBar.style.width = '0%';
-
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
-            resetBtn.disabled = false;
-        }
-
-        // --- Event Listeners ---
-        startBtn.addEventListener('click', startSimulation);
-        stopBtn.addEventListener('click', stopSimulation);
-        resetBtn.addEventListener('click', resetAI);
-
-        // --- Initial Setup ---
-        // Start with a clean state and update UI once
-        resetAI(); // Call reset to initialize all states correctly
+        });
     </script>
 </body>
 </html>
